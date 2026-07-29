@@ -1,0 +1,55 @@
+# requirements.txt
+# ------------------
+# This file lists every Python library the bot needs to run. When the bot is
+# deployed (or run locally), "pip install -r requirements.txt" reads this file
+# and installs each package at the exact version listed, so the bot behaves
+# the same way no matter which computer or server it's running on.
+
+fastapi==0.115.0
+# The web framework the bot is built on. It's what lets the bot expose the
+# /health and /run.jsonl web addresses that other tools (and the grader) can
+# check.
+
+uvicorn[standard]==0.30.6
+# The actual server that runs the FastAPI app and keeps it listening for
+# incoming web requests. "[standard]" adds a few extra performance extras
+# that uvicorn recommends.
+
+httpx==0.27.2
+# Used to make web requests without blocking the rest of the bot while
+# waiting for a reply - important since the bot needs to talk to Telegram
+# and fetch web pages/APIs while still handling other messages at the same
+# time.
+
+openai==1.51.0
+# The official library for talking to the LLM (GPT-4o) that powers the bot's
+# reasoning and decision-making.
+
+pandas==2.2.2
+# A data analysis library, available for the model to use inside its Python
+# tool calls if a question involves working with tables of data.
+
+numpy==1.26.4
+# A numerical computing library, also available inside the model's Python
+# tool calls for calculations and statistics.
+
+requests==2.32.3
+# A simpler library for making basic web requests, available for the model
+# to use when it writes its own Python code to fetch a webpage.
+
+beautifulsoup4==4.12.3
+# Used for reading and extracting information out of HTML web pages, in
+# case the model needs to scrape a page for an answer.
+
+lxml==5.3.0
+# A fast parser that BeautifulSoup uses behind the scenes to read HTML more
+# reliably.
+
+openpyxl==3.1.5
+# Lets pandas read and write Excel (.xlsx) files, in case a question
+# involves spreadsheet-style data.
+
+python-dotenv==1.0.1
+# Lets the bot load settings (like API keys) from a local .env file when
+# testing on a personal computer, instead of needing them set as real
+# environment variables every time.
