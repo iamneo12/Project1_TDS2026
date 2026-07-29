@@ -1,0 +1,45 @@
+# render.yaml
+# -----------
+# This file tells Render (the free hosting service used for this project)
+# exactly how to build and run the bot. Render reads this file automatically
+# when the GitHub repo is connected, so the deployment settings don't need to
+# be typed in by hand.
+
+services:
+  - name: telegram-data-agent   # the name shown for this service in the Render dashboard
+    type: web                   # this is a web service (it needs to receive web requests)
+    env: python                 # Render should use its Python environment to run it
+    plan: free                  # use Render's free hosting tier
+
+    # How to install everything the bot needs before starting it up:
+    buildCommand: pip install -r requirements.txt
+
+    # How to actually start the bot once it's built. This runs the FastAPI
+    # app named "app" inside bot.py, and listens on whatever port Render
+    # assigns (Render sets the $PORT value automatically).
+    startCommand: uvicorn bot:app --host 0.0.0.0 --port $PORT
+
+    envVars:
+      # --- Which LLM to use, and where to reach it ---
+      - key: LLM_MODEL
+        value: gpt-4o          # the model that powers the bot's reasoning
+      - key: LLM_BASE_URL
+        value: https://api.openai.com/v1   # where to send requests for that model
+
+      # --- Settings for the "when should the bot stop looking things up and
+      #     just answer" logic (see PART 5 in bot.py for the full explanation) ---
+      - key: MAX_AGENT_STEPS
+        value: "12"             # never let the bot try more than 12 times on one question
+      - key: QUESTION_BUDGET_SECONDS
+        value: "210"            # total seconds allowed to answer one question
+
+      # --- Secret values ---
+      # These are left blank here on purpose. They get typed in manually,
+      # once, inside the Render dashboard under this service's "Environment"
+      # tab - never written directly into this file or committed to GitHub.
+      - key: LLM_API_KEY
+        sync: false             # the API key used to call the LLM
+      - key: BOT_TOKEN
+        sync: false             # the Telegram bot's token, from @BotFather
+      - key: BASE_URL
+        sync: false             # this bot's own public web address once deployed
